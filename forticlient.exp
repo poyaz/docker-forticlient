@@ -47,7 +47,7 @@ proc execute_command {cert} {
           set timeout -1
           interact
         } timeout {
-          send_user -- "Failed to bring tunnel up after $env(VPNTIMEOUT)s\n"
+          send_user -- "Failed to bring tunnel up after $env(VPN_TIMEOUT)s\n"
           exit 1
         }
       }
