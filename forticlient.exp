@@ -1,0 +1,60 @@
+#!/usr/bin/expect -f
+
+set timeout $env(VPN_TIMEOUT)
+
+proc execute_command {cert} {
+  global opts env
+
+  log_user 1
+
+  if ([regexp -nocase ".+" $cert]) {
+    spawn "/usr/bin/openfortivpn" $env(VPN_ADDR) -u $env(VPN_USER) --trusted-cert $cert
+  } else {
+    spawn "/usr/bin/openfortivpn" $env(VPN_ADDR) -u $env(VPN_USER)
+  }
+
+  expect -exact "VPN account password:"
+  send -- "$env(VPN_PASS)\n"
+  send_user -- "\n"
+
+  log_user 0 
+
+  expect {
+    "ERROR:  Gateway certificate validation failed" {
+      expect eof
+      set msg $expect_out(buffer)
+      set cert_with_color [lindex [split $msg \n] 1]
+      set cert_without_color [string map {\u0007 "" \u001b "" \[0;0m "" \[0;31m ""} $cert_with_color]
+      set found [regexp -expanded { ERROR:\s+--trusted-cert\s+(.+) } $cert_without_color match cert_option]
+
+      if {$found != 1} {
+        send_user -- $msg
+        send_user -- "\n"
+        exit 1
+      }
+
+      send_user -- "\n\n\INFO: Validate certificate gateway\n"
+      send_user -- "cert $cert_option\n"
+
+      execute_command $cert_option
+    }
+
+    .* {
+      log_user 1
+
+      expect {
+        "INFO:   Tunnel is up and running." {
+          set timeout -1
+          interact
+        } timeout {
+          send_user -- "Failed to bring tunnel up after $env(VPNTIMEOUT)s\n"
+          exit 1
+        }
+      }
+      
+    }
+  }
+
+}
+
+execute_command ""
