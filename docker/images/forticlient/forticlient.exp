@@ -45,7 +45,14 @@ proc execute_command {cert} {
       expect {
         "INFO:   Tunnel is up and running." {
           set timeout -1
-          interact
+
+          trap {
+              send \x03
+              send_user "You pressed Ctrl+C\n"
+              exit
+          } SIGINT
+
+          expect eof
         } timeout {
           send_user -- "Failed to bring tunnel up after $env(VPN_TIMEOUT)s\n"
           exit 1

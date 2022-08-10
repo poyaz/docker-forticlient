@@ -1,0 +1,35 @@
+version: "2.3"
+services:
+  vpn:
+    image: poyaz/forticlient:latest
+    network_mode: bridge
+    devices:
+      - /dev/net/tun:/dev/net/tun
+      - /dev/ppp:/dev/ppp
+    cap_add:
+      - NET_ADMIN
+    restart: "always"
+
+  ssh:
+    image: poyaz/forticlient-ssh:latest
+    depends_on:
+      - vpn
+    healthcheck:
+      test: [ "CMD-SHELL", "test `ip -o a show | cut -d ' ' -f 2 | grep ppp0 | wc -l` -eq 1 || kill 1" ]
+      interval: 3s
+      timeout: 2s
+    restart: "always"
+    network_mode: "service:vpn"
+
+  socks5:
+    image: wernight/dante
+    depends_on:
+      - vpn
+    volumes:
+      - $PWD/storage/docker/socks5/sockd.conf:/etc/sockd.conf
+    healthcheck:
+      test: [ "CMD-SHELL", "test `ip -o a show | cut -d ' ' -f 2 | grep ppp0 | wc -l` -eq 1 || kill 1" ]
+      interval: 3s
+      timeout: 2s
+    restart: "always"
+    network_mode: "service:vpn"
