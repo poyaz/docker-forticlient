@@ -39,6 +39,22 @@ docker-compose \
 Also, you can run with own compose config. You can create a config compose file on `docker/custom` folder. This folder
 not tracked with source control.
 
+Tip: You can add custom port for ssh and socks5 server withou change in any compose file with two environment variable:
+
+* FORTI_SSH_PORT (Default: 2222)
+* FORTI_SOCKS_PORT (Default: 1080)
+
+```bash
+### With publish port on 127.0.0.1
+### ssh server: 127.0.0.1:2020
+### socks5 server: 127.0.0.1:8080
+FORTI_SSH_PORT=2020 FORTI_SOCKS_PORT=8080 docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  -f docker/docker-compose.publish.yml \
+  up -d
+```
+
 ### Run forticlient container
 
 ```bash

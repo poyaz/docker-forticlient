@@ -1,3 +1,9 @@
+# 2020-08-12 2:40
+
+### Add
+
+- Add two environment variable for change publish port and run ssh and socks on custom port
+
 # 2022-08-10 10:17
 
 ### Add
