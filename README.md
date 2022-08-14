@@ -39,7 +39,8 @@ docker-compose \
 Also, you can run with own compose config. You can create a config compose file on `docker/custom` folder. This folder
 not tracked with source control.
 
-Tip: You can add custom port for ssh and socks5 server withou change in any compose file with two environment variable:
+**Tip:** You can add custom port for ssh and socks5 server withou change in any compose file with two environment
+variable:
 
 * FORTI_SSH_PORT (Default: 2222)
 * FORTI_SOCKS_PORT (Default: 1080)
@@ -55,7 +56,7 @@ FORTI_SSH_PORT=2020 FORTI_SOCKS_PORT=8080 docker-compose \
   up -d
 ```
 
-### Run forticlient container
+### Run forti client container
 
 ```bash
 docker run -it \
@@ -65,6 +66,40 @@ docker run -it \
   -e VPN_ADDR=host:port \
   -e VPN_USER=me@domain \
   -e VPN_PASS=secret \
+  poyaz/forticlient:latest
+```
+
+## Two-factor authentication
+
+This image now support two-factor authentication. List of support 2Fa in below:
+
+### Manual 2Fa (With a file)
+
+The code listen the file and after write OTP on file you authenticate processed. Because we are on a container and don't
+have GUI
+
+If your server using 2Fa, after the vpn authenticated successfully create lock file on `storage/docker/2fa` directory
+with name `storage/docker/2fa/2fa.txt.lock` (If you use default variable for 2Fa), then you should put your OTP in this
+file, After you write your OTP in this file your authenticate has continued. if your OTP code is correct you vpn connect successfully.
+
+**Tip:**
+You can change volume with below variable if you want to use another directory or file on a **container**, Then you
+should mount this folder on docker-compose file or `docker run` command
+
+* VPN_2FA_DIR (Default: /tmp/2fa/)
+* VPN_2FA_FILE (Default: /tmp/2fa/2fa.txt)
+
+```bash
+docker run -it \
+  --device /dev/net/tun:/dev/net/tun \
+  --device /dev/ppp:/dev/ppp \
+  --cap-add NET_ADMIN \
+  -v /tmp/my-custom-dir:/app
+  -e VPN_ADDR=host:port \
+  -e VPN_USER=me@domain \
+  -e VPN_PASS=secret \
+  -e VPN_2FA_DIR=/app \
+  -e VPN_2FA_DIR=/app/my-2fa.txt
   poyaz/forticlient:latest
 ```
 

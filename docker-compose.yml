@@ -6,6 +6,8 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
       - /dev/ppp:/dev/ppp
+    volumes:
+      - $PWD/storage/docker/2fa:/tmp/2fa
     cap_add:
       - NET_ADMIN
     restart: "always"

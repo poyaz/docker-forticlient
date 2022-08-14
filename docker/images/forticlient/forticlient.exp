@@ -39,6 +39,19 @@ proc execute_command {cert} {
       execute_command $cert_option
     }
 
+    "Two-factor authentication token:" {
+      send_user -- "Two-factor authentication token:"
+
+      exec "/usr/bin/touch" "$env(VPN_2FA_FILE).lock"
+      set token [exec "/bin/bash" /usr/local/bin/file-notify-2fa.sh]
+      exec "/bin/rm" -f "$env(VPN_2FA_FILE).lock"
+
+      send -- "$token\n"
+      send_user -- "\n"
+
+      exp_continue
+    }
+
     .* {
       log_user 1
 
