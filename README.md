@@ -79,7 +79,7 @@ The code listen the file and after write OTP on file you authenticate processed.
 have GUI
 
 If your server using 2Fa, after the vpn authenticated successfully create lock file on `storage/docker/2fa` directory
-with name `storage/docker/2fa/2fa.txt.lock` (If you use default variable for 2Fa), then you should put your OTP in this
+with name `storage/docker/2fa/2fa.txt` (If you use default variable for 2Fa), then you should put your OTP in this
 file, After you write your OTP in this file your authenticate has continued. if your OTP code is correct you vpn connect successfully.
 
 **Tip:**
