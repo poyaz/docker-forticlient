@@ -1,0 +1,12 @@
+version: "2.3"
+services:
+  ssh:
+    image: poyaz/forticlient-ssh:latest
+    depends_on:
+      - vpn
+    healthcheck:
+      test: [ "CMD-SHELL", "test `ip -o a show | cut -d ' ' -f 2 | grep ppp0 | wc -l` -eq 1 || kill 1" ]
+      interval: 11s
+      timeout: 2s
+    restart: "always"
+    network_mode: "service:vpn"
