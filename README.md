@@ -258,8 +258,8 @@ docker run -it \
 ### RDP port forwarder
 docker run -it \
   --name your-forwarder-container-name \
-  --network container:your-vpn-container-name
-  -p 3389:3389
+  --network container:your-vpn-container-name \
+  -p 3389:3389 \
   alpine/socat:latest tcp4-listen:3389,reuseaddr tcp:your-rdp-destination-addr:3389
 ```
 
