@@ -1,0 +1,5 @@
+version: "2.3"
+services:
+  ssh:
+    env_file:
+      - "${FORTI_SSH_ENV:-./env/ssh/.env}"
