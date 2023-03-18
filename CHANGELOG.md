@@ -1,3 +1,16 @@
+# 2023-03-18 15:24
+
+### Add
+
+- Support multi env file for run multi instance of vpn
+- Add port forwarder over VPM connection for using like RDP
+
+### Change
+
+- Move ssh service to new docker-compose file for better management (Path: **docker/docker-compose.ssh.yml**)
+- Move ssh env file to new docker-compose file (Path: **docker/docker-compose.env-ssh.yml**)
+- Move ssh publish port to new docker-compose file (Path: **docker/docker-compose.ssh-publish.yml**)
+
 # 2022-08-13 10:10
 
 ### Change
