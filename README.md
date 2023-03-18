@@ -9,9 +9,52 @@ The container uses the `openfortivpn` linux binary to manage ppp interface
 All the container traffic is routed through the VPN, so you can in turn route host traffic through the container to
 access remote subnets.
 
-### With docker-compose
+### With docker-compose (Default)
 
 For run with docker compose you can use bellow steps:
+
+1. Copy `env/vpn/.env.example` to `env/vpn/.env`
+2. Fill your vpn identity on `env/vpn/.env`
+3. Execute bellow command for run **forticlient** and **socks5**
+
+```bash
+### Without publish port
+### Run two container: 1. forticlient 2.socks5
+docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  up -d
+
+### With publish port on 127.0.0.1
+### socks5 server: 127.0.0.1:1080
+docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  -f docker/docker-compose.publish.yml \
+  up -d
+```
+
+Also, you can run with own compose config. You can create a config compose file on `docker/custom` folder. This folder
+not tracked with source control.
+
+**Tip:** You can add custom port for socks5 server without change in any compose file with below environment
+variable:
+
+* FORTI_SOCKS_PORT (Default: 1080)
+
+```bash
+### With publish port on 127.0.0.1
+### socks5 server: 127.0.0.1:8080
+FORTI_SOCKS_PORT=8080 docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  -f docker/docker-compose.publish.yml \
+  up -d
+```
+
+### With docker-compose (ssh server)
+
+If you want using ssh server follow bellow steps:
 
 1. Copy `env/vpn/.env.example` to `env/vpn/.env`
 2. Fill your vpn identity on `env/vpn/.env`
@@ -21,18 +64,24 @@ For run with docker compose you can use bellow steps:
 
 ```bash
 ### Without publish port
+### Run three container: 1. forticlient 2.socks5 3, ssh
 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
+  -f docker/docker-compose.ssh.yml \
+  -f docker/docker-compose.ssh-env.yml \
   up -d
 
 ### With publish port on 127.0.0.1
-### ssh server: 127.0.0.1:2222
 ### socks5 server: 127.0.0.1:1080
+### ssh server: 127.0.0.1:2222
 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
+  -f docker/docker-compose.ssh.yml \
+  -f docker/docker-compose.ssh-env.yml \
+  -f docker/docker-compose.ssh-publish.yml \
   up -d
 ```
 
@@ -47,12 +96,136 @@ variable:
 
 ```bash
 ### With publish port on 127.0.0.1
-### ssh server: 127.0.0.1:2020
 ### socks5 server: 127.0.0.1:8080
 FORTI_SSH_PORT=2020 FORTI_SOCKS_PORT=8080 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
+  -f docker/docker-compose.ssh.yml \
+  -f docker/docker-compose.ssh-env.yml \
+  -f docker/docker-compose.ssh-publish.yml \
+  up -d
+```
+
+### With docker-compose (port forwarder)
+
+If you want using ssh server follow bellow steps:
+
+1. Copy `env/vpn/.env.example` to `env/vpn/.env`
+2. Fill your vpn identity on `env/vpn/.env`
+3. Execute bellow command for run **forticlient** and **socks5** and **socat**
+
+```bash
+### Without publish port
+### Run three container: 1. forticlient 2.socks5 3, socat
+FORTI_SOCAT_DEST_ADDR=remote-addr FORTI_SOCAT_DEST_PORT=3389 docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  -f docker/docker-compose.socat.yml \
+  up -d
+
+### With publish port on 127.0.0.1
+### socks5 server: 127.0.0.1:1080
+### spcat server: 127.0.0.1:3389
+FORTI_SOCAT_PORT=3389 FORTI_SOCAT_DEST_ADDR=remote-addr FORTI_SOCAT_DEST_PORT=3389 docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  -f docker/docker-compose.publish.yml \
+  -f docker/docker-compose.socat.yml \
+  -f docker/docker-compose.socat-publish.yml \
+  up -d
+```
+
+Also, you can run with own compose config. You can create a config compose file on `docker/custom` folder. This folder
+not tracked with source control.
+
+**Tip:** You can add custom port for socat and socks5 server without change in any compose file with two environment
+variable:
+
+* FORTI_SOCAT_PORT (Default: 3389)
+
+```bash
+### With publish port on 127.0.0.1
+### socat server: 127.0.0.1:3389
+FORTI_SOCAT_DEST_ADDR=remote-addr FORTI_SOCAT_DEST_PORT=3389  FORTI_SOCAT_PORT=3389 docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  -f docker/docker-compose.publish.yml \
+  -f docker/docker-compose.ssh.yml \
+  -f docker/docker-compose.ssh-env.yml \
+  -f docker/docker-compose.ssh-publish.yml \
+  up -d
+```
+
+### With multi vpn instance
+
+If you want using multi vpn instance with single compose file, You should follow bellow steps:
+
+For run with docker compose you can use bellow steps:
+
+1. Copy `env/vpn/.env.example` to `env/vpn/vpn-1.env`
+2. Fill your vpn identity on `env/vpn/vpn-1.env`
+3. Copy `env/vpn/.env.example` to `env/vpn/vpn-2.env`
+4. Fill your vpn identity on `env/vpn/vpn-2.env`
+5. Execute bellow command for run **forticlient** and **socks5**
+
+```bash
+### Without publish port
+### Run VPN-1
+COMPOSE_PROJECT_NAME=vpn-1 docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  up -d
+
+### With publish port on 127.0.0.1
+### Run VPN-1 with socks5 publish port on port 8080
+COMPOSE_PROJECT_NAME=vpn-1 FORTI_SOCKS_PORT=8080 docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  -f docker/docker-compose.publish.yml \
+  up -d
+  
+##############################################################
+
+### Without publish port
+### Run VPN-2
+COMPOSE_PROJECT_NAME=vpn-2 docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  up -d
+
+### With publish port on 127.0.0.1
+### Run VPN-2 with socks5 publish port on port 8081
+COMPOSE_PROJECT_NAME=vpn-2 FORTI_SOCKS_PORT=8081 docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  -f docker/docker-compose.publish.yml \
+  up -d
+```
+
+You can do same for port forwarder container:
+
+```bash
+### Run VPN-1 and forwarder RDP port to remote-server-1
+### socks5 server: 127.0.0.1:1080
+### spcat server: 127.0.0.1:3389
+COMPOSE_PROJECT_NAME=vpn-1 FORTI_SOCKS_PORT=8080 FORTI_SOCAT_PORT=3389 FORTI_SOCAT_DEST_ADDR=remote-server-1 FORTI_SOCAT_DEST_PORT=3389 docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  -f docker/docker-compose.publish.yml \
+  -f docker/docker-compose.socat.yml \
+  -f docker/docker-compose.socat-publish.yml \
+  up -d
+  
+### Run VPN-2 and forwarder RDP port to remote-server-2
+### socks5 server: 127.0.0.1:1081
+### spcat server: 127.0.0.1:3390
+COMPOSE_PROJECT_NAME=vpn-2 FORTI_SOCKS_PORT=1081 FORTI_SOCAT_PORT=3390 FORTI_SOCAT_DEST_ADDR=remote-server-2 FORTI_SOCAT_DEST_PORT=3389 docker-compose \
+  -f docker-compose.yml \
+  -f docker/docker-compose.env.yml \
+  -f docker/docker-compose.publish.yml \
+  -f docker/docker-compose.socat.yml \
+  -f docker/docker-compose.socat-publish.yml \
   up -d
 ```
 
@@ -67,6 +240,27 @@ docker run -it \
   -e VPN_USER=me@domain \
   -e VPN_PASS=secret \
   poyaz/forticlient:latest
+```
+
+### Run forti client container (With port forwarder)
+
+```bash
+docker run -it \
+  --name your-vpn-container-name \
+  --device /dev/net/tun:/dev/net/tun \
+  --device /dev/ppp:/dev/ppp \
+  --cap-add NET_ADMIN \
+  -e VPN_ADDR=host:port \
+  -e VPN_USER=me@domain \
+  -e VPN_PASS=secret \
+  poyaz/forticlient:latest
+
+### RDP port forwarder
+docker run -it \
+  --name your-forwarder-container-name \
+  --network container:your-vpn-container-name
+  -p 3389:3389
+  alpine/socat:latest tcp4-listen:3389,reuseaddr tcp:your-rdp-destination-addr:3389
 ```
 
 ## Two-factor authentication
