@@ -126,7 +126,7 @@ FORTI_SOCAT_DEST_ADDR=remote-addr FORTI_SOCAT_DEST_PORT=3389 docker-compose \
 
 ### With publish port on 127.0.0.1
 ### socks5 server: 127.0.0.1:1080
-### spcat server: 127.0.0.1:3389
+### socat server: 127.0.0.1:3389
 FORTI_SOCAT_PORT=3389 FORTI_SOCAT_DEST_ADDR=remote-addr FORTI_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
@@ -208,7 +208,7 @@ You can do same for port forwarder container:
 ```bash
 ### Run VPN-1 and forwarder RDP port to remote-server-1
 ### socks5 server: 127.0.0.1:1080
-### spcat server: 127.0.0.1:3389
+### socat server: 127.0.0.1:3389
 COMPOSE_PROJECT_NAME=vpn-1 FORTI_SOCKS_PORT=8080 FORTI_SOCAT_PORT=3389 FORTI_SOCAT_DEST_ADDR=remote-server-1 FORTI_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
@@ -219,7 +219,7 @@ COMPOSE_PROJECT_NAME=vpn-1 FORTI_SOCKS_PORT=8080 FORTI_SOCAT_PORT=3389 FORTI_SOC
   
 ### Run VPN-2 and forwarder RDP port to remote-server-2
 ### socks5 server: 127.0.0.1:1081
-### spcat server: 127.0.0.1:3390
+### socat server: 127.0.0.1:3390
 COMPOSE_PROJECT_NAME=vpn-2 FORTI_SOCKS_PORT=1081 FORTI_SOCAT_PORT=3390 FORTI_SOCAT_DEST_ADDR=remote-server-2 FORTI_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
