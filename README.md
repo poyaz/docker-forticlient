@@ -250,6 +250,7 @@ docker run -it \
   --device /dev/net/tun:/dev/net/tun \
   --device /dev/ppp:/dev/ppp \
   --cap-add NET_ADMIN \
+  -p 3389:3389 \
   -e VPN_ADDR=host:port \
   -e VPN_USER=me@domain \
   -e VPN_PASS=secret \
@@ -259,7 +260,6 @@ docker run -it \
 docker run -it \
   --name your-forwarder-container-name \
   --network container:your-vpn-container-name \
-  -p 3389:3389 \
   alpine/socat:latest tcp4-listen:3389,reuseaddr tcp:your-rdp-destination-addr:3389
 ```
 
