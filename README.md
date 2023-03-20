@@ -167,19 +167,20 @@ For run with docker compose you can use bellow steps:
 2. Fill your vpn identity on `env/vpn/vpn-1.env`
 3. Copy `env/vpn/.env.example` to `env/vpn/vpn-2.env`
 4. Fill your vpn identity on `env/vpn/vpn-2.env`
-5. Execute bellow command for run **forticlient** and **socks5**
+5. You have to fill variable `FORTI_VPN_ENV`, It is path of env file you want use it
+6. Execute bellow command for run **forticlient** and **socks5**
 
 ```bash
 ### Without publish port
 ### Run VPN-1
-COMPOSE_PROJECT_NAME=vpn-1 docker-compose \
+COMPOSE_PROJECT_NAME=vpn-1 FORTI_VPN_ENV=env/vpn/vpn-1.env docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   up -d
 
 ### With publish port on 127.0.0.1
 ### Run VPN-1 with socks5 publish port on port 8080
-COMPOSE_PROJECT_NAME=vpn-1 FORTI_SOCKS_PORT=8080 docker-compose \
+COMPOSE_PROJECT_NAME=vpn-1 FORTI_VPN_ENV=env/vpn/vpn-1.env FORTI_SOCKS_PORT=8080 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
@@ -189,14 +190,14 @@ COMPOSE_PROJECT_NAME=vpn-1 FORTI_SOCKS_PORT=8080 docker-compose \
 
 ### Without publish port
 ### Run VPN-2
-COMPOSE_PROJECT_NAME=vpn-2 docker-compose \
+COMPOSE_PROJECT_NAME=vpn-2 FORTI_VPN_ENV=env/vpn/vpn-2.env docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   up -d
 
 ### With publish port on 127.0.0.1
 ### Run VPN-2 with socks5 publish port on port 8081
-COMPOSE_PROJECT_NAME=vpn-2 FORTI_SOCKS_PORT=8081 docker-compose \
+COMPOSE_PROJECT_NAME=vpn-2 FORTI_VPN_ENV=env/vpn/vpn-2.env FORTI_SOCKS_PORT=8081 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
@@ -209,7 +210,7 @@ You can do same for port forwarder container:
 ### Run VPN-1 and forwarder RDP port to remote-server-1
 ### socks5 server: 127.0.0.1:1080
 ### socat server: 127.0.0.1:3389
-COMPOSE_PROJECT_NAME=vpn-1 FORTI_SOCKS_PORT=8080 FORTI_SOCAT_PORT=3389 FORTI_SOCAT_DEST_ADDR=remote-server-1 FORTI_SOCAT_DEST_PORT=3389 docker-compose \
+COMPOSE_PROJECT_NAME=vpn-1 FORTI_VPN_ENV=env/vpn/vpn-1.env FORTI_SOCKS_PORT=8080 FORTI_SOCAT_PORT=3389 FORTI_SOCAT_DEST_ADDR=remote-server-1 FORTI_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
@@ -220,7 +221,7 @@ COMPOSE_PROJECT_NAME=vpn-1 FORTI_SOCKS_PORT=8080 FORTI_SOCAT_PORT=3389 FORTI_SOC
 ### Run VPN-2 and forwarder RDP port to remote-server-2
 ### socks5 server: 127.0.0.1:1081
 ### socat server: 127.0.0.1:3390
-COMPOSE_PROJECT_NAME=vpn-2 FORTI_SOCKS_PORT=1081 FORTI_SOCAT_PORT=3390 FORTI_SOCAT_DEST_ADDR=remote-server-2 FORTI_SOCAT_DEST_PORT=3389 docker-compose \
+COMPOSE_PROJECT_NAME=vpn-2 FORTI_VPN_ENV=env/vpn/vpn-2.env FORTI_SOCKS_PORT=1081 FORTI_SOCAT_PORT=3390 FORTI_SOCAT_DEST_ADDR=remote-server-2 FORTI_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
