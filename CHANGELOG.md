@@ -1,3 +1,9 @@
+# 2023-03-21 15:07
+
+### Bugfix
+
+- Fix socat compose file for run command
+
 # 2023-03-18 15:24
 
 ### Add
