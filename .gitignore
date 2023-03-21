@@ -8,8 +8,11 @@ docker/custom/*
 
 .env
 
+env/vpn/*
+!env/vpn/.env.example
+
 storage/docker/2fa/*
-!storage/docker/2fa/.gitkeep
+!storage/docker/2fa/.gitkeep/
 
 # Created by https://www.gitignore.io/api/visualstudiocode,linux
 # Edit at https://www.gitignore.io/?templates=visualstudiocode,linux

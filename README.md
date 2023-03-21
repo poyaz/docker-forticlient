@@ -147,7 +147,7 @@ variable:
 ```bash
 ### With publish port on 127.0.0.1
 ### socat server: 127.0.0.1:3389
-FORTI_SOCAT_DEST_ADDR=remote-addr FORTI_SOCAT_DEST_PORT=3389  FORTI_SOCAT_PORT=3389 docker-compose \
+FORTI_SOCAT_DEST_ADDR=remote-addr FORTI_SOCAT_DEST_PORT=3389 FORTI_SOCAT_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   -f docker/docker-compose.publish.yml \
