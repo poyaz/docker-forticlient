@@ -1,3 +1,10 @@
+# 2023-03-25 11:57
+
+### Bugfix
+
+- Add fork options on socat command
+- Fix using private/public key on ssh when password of ssh user is empty (Generate random password if password environment is empty)
+
 # 2023-03-21 15:07
 
 ### Bugfix
