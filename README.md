@@ -261,7 +261,7 @@ docker run -it \
 docker run -it \
   --name your-forwarder-container-name \
   --network container:your-vpn-container-name \
-  alpine/socat:latest tcp4-listen:3389,reuseaddr tcp:your-rdp-destination-addr:3389
+  alpine/socat:latest tcp4-listen:3389,reuseaddr,fork tcp:your-rdp-destination-addr:3389
 ```
 
 ## Two-factor authentication
