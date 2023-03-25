@@ -40,11 +40,15 @@ generate_host_keys() {
 }
 
 sshd_set_password() {
+  local password
+
   if [ -z "$SSH_USER_PASSWORD" ]; then
-    return
+      password=$(echo $RANDOM | md5sum | head -c 20; echo;)
+  else
+      password=$SSH_USER_PASSWORD
   fi
 
-  echo "$SSH_USER_USERNAME:$SSH_USER_PASSWORD" | chpasswd
+  echo "$SSH_USER_USERNAME:$password" | chpasswd
 }
 
 sshd_set_public_key() {
