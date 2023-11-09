@@ -1,0 +1,3 @@
+version:
+  forticlient: 1.0.1
+  ssh: 1.0.0
