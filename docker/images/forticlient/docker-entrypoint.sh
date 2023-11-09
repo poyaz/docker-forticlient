@@ -30,6 +30,7 @@ function docker_setup_env() {
   file_env 'VPN_TIMEOUT' 30
   file_env 'VPN_2FA_DIR' '/tmp/2fa/'
   file_env 'VPN_2FA_FILE' '/tmp/2fa/2fa.txt'
+  file_env 'RUNTIME_ENABLE_IPTABLES_LEGACY'
 }
 
 check_require_variable_set() {
@@ -48,6 +49,10 @@ function run() {
   rm -f "${VPN_2FA_FILE}.lock" "$VPN_2FA_FILE"
   touch "$VPN_2FA_FILE"
   chmod 777 "$VPN_2FA_FILE"
+
+  if [ -n "$RUNTIME_ENABLE_IPTABLES_LEGACY" ]; then
+    update-alternatives --set iptables /usr/sbin/iptables-legacy
+  fi
 
   # Setup masquerade, to allow using the container as a gateway
   for iface in $(ip a | grep eth | grep inet | awk '{print $2}'); do

@@ -34,6 +34,8 @@ docker-compose \
   up -d
 ```
 
+**Tip:** If you use iptables legacy or old table you can fill environment variable `RUNTIME_ENABLE_IPTABLES_LEGACY` (with any variable)
+
 Also, you can run with own compose config. You can create a config compose file on `docker/custom` folder. This folder
 not tracked with source control.
 
