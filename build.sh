@@ -25,8 +25,8 @@ docker build -t "${prefix_image_ssh}:latest" .
 
 cd "${DIRNAME}" || exit 1
 
-docker push "${prefix_image_forti}:${forti_version}" .
+docker push "${prefix_image_forti}:${forti_version}"
 docker push "${prefix_image_forti}:latest"
 
-docker push "${prefix_image_ssh}:${ssh_version}" .
+docker push "${prefix_image_ssh}:${ssh_version}"
 docker push "${prefix_image_ssh}:latest"
