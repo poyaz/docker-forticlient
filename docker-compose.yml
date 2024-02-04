@@ -15,7 +15,8 @@ services:
   socks5:
     image: wernight/dante
     depends_on:
-      - vpn
+      vpn:
+        condition: service_healthy
     volumes:
       - ./storage/docker/socks5/sockd.conf:/etc/sockd.conf
     healthcheck:
