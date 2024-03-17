@@ -1,5 +1,0 @@
-version: "2.3"
-services:
-  vpn:
-    ports:
-      - 127.0.0.1:${FORTI_SOCKS_PORT:-1080}:1080

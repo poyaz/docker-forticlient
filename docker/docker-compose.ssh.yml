@@ -4,9 +4,16 @@ services:
     image: poyaz/forticlient-ssh:latest
     depends_on:
       - vpn
+    environment:
+      SSH_PORT: 1082
     healthcheck:
       test: [ "CMD-SHELL", "test `ip -o a show | cut -d ' ' -f 2 | grep ppp0 | wc -l` -eq 1 || kill 1" ]
       interval: 11s
       timeout: 2s
     restart: "always"
     network_mode: "service:vpn"
+    logging:
+      driver: ${VPN_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${VPN_LOG_MAX_SIZE:-2m}
+        max-file: ${VPN_LOG_MAX_FILE:-10}
