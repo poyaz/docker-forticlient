@@ -24,6 +24,7 @@ file_env() {
 docker_setup_env() {
   file_env 'SSH_USER_PASSWORD'
   file_env 'SSH_PUBLIC_KEY_VALUE'
+  file_env 'SSH_PORT' '22'
 }
 
 sshd_config_file() {
@@ -32,7 +33,9 @@ sshd_config_file() {
   #
   #  sed -i s/#PidFile.*/PidFile\ \\/run\\/sshd\\/sshd.pid/ /etc/ssh/sshd_config
 
-  sed -i s/#*AllowTcpForwarding.*/AllowTcpForwarding\ yes/ /etc/ssh/sshd_config
+  sed -i "s/^#*AllowTcpForwarding.*/AllowTcpForwarding\ yes/" /etc/ssh/sshd_config
+  sed -i "s/^#*Port.*/Port\ ${SSH_PORT}/" /etc/ssh/sshd_config
+  sed -i "s/^#*PermitRootLogin.*/PermitRootLogin\ no/" /etc/ssh/sshd_config
 }
 
 generate_host_keys() {
