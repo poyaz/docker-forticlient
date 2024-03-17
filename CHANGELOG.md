@@ -1,3 +1,19 @@
+# 2024-03-17 23:35
+
+### Add
+
+- Add DNS server for use dns over vpn service (Default port listener: 1051)
+- Disable root login on ssh server
+- Add SSH_PORT for run ssh listener on specific port
+
+### Change
+
+- Change port listens, these range are 1080 to 1082 (http/socks5: 1080, dns: 1081, ssh: 1082)
+
+### Remove
+
+- Remove compose files for publishing port
+
 # 2023-03-25 11:57
 
 ### Bugfix
