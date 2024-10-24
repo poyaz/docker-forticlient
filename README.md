@@ -24,14 +24,6 @@ docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
   up -d
-
-### With publish port on 127.0.0.1
-### http/socks5 server: 127.0.0.1:1080
-docker-compose \
-  -f docker-compose.yml \
-  -f docker/docker-compose.env.yml \
-  -f docker/docker-compose.publish.yml \
-  up -d
 ```
 
 **Tip:** If you use iptables legacy or old table you can fill environment variable `RUNTIME_ENABLE_IPTABLES_LEGACY` (
@@ -45,13 +37,21 @@ variable:
 
 * FORTI_PROXY_PORT (Default: 1080)
 
+Other variables:
+
+| ENV Name         | Service | Type | Default | Description                        |
+|------------------|---------|------|---------|------------------------------------|
+| FORTI_PROXY_PORT | PROXY   | TCP  | 1080    | HTTP/SOCKS5 ports (multiplex port) |
+| FORTI_DNS_PORT   | DNS     | TCP  | 1081    | -                                  |
+| FORTI_DNS_PORT   | DNS     | UDP  | 1081    | -                                  |
+| FORTI_SSH_PORT   | SSH     | TCP  | 1082    | -                                  |
+
 ```bash
 ### With publish port on 127.0.0.1
 ### http/socks5 server: 127.0.0.1:8080
 FORTI_PROXY_PORT=8080 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
-  -f docker/docker-compose.publish.yml \
   up -d
 ```
 
@@ -163,7 +163,6 @@ FORTI_SOCAT_DEST_ADDR=remote-addr FORTI_SOCAT_DEST_PORT=3389 docker-compose \
 FORTI_SOCAT_PORT=3389 FORTI_SOCAT_DEST_ADDR=remote-addr FORTI_SOCAT_DEST_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
-  -f docker/docker-compose.publish.yml \
   -f docker/docker-compose.socat.yml \
   -f docker/docker-compose.socat-publish.yml \
   up -d
@@ -184,7 +183,6 @@ variable:
 FORTI_SOCAT_DEST_ADDR=remote-addr FORTI_SOCAT_DEST_PORT=3389 FORTI_SOCAT_PORT=3389 docker-compose \
   -f docker-compose.yml \
   -f docker/docker-compose.env.yml \
-  -f docker/docker-compose.publish.yml \
   -f docker/docker-compose.ssh.yml \
   -f docker/docker-compose.ssh-env.yml \
   -f docker/docker-compose.ssh-publish.yml \
@@ -336,12 +334,7 @@ docker run -it \
 If you want to connect another server you can use ssh jump with below sample:
 
 ```bash
-### If use docker/docker-compose.publish.yml
 ssh -o ProxyCommand="ssh -W %h:%p -p 1082 forti@127.0.0.1" <username>@<target-host>
-
-### If don't use docker/docker-compose.publish.yml
-### get container ip with `docker inspect --format '{{ .NetworkSettings.IPAddress }}' <container>`
-ssh -o ProxyCommand="ssh -W %h:%p -p 1082 forti@<container-ip>" pouya.azarpour@<target-host>
 ```
 
 If your ssh server has been removed, and you create new ssh server (or recreated). You
@@ -361,12 +354,7 @@ request to
 server
 
 ```bash
-### If use docker/docker-compose.publish.yml
 ssh -oProxyCommand="nc -X 5 -x 127.0.0.1:1080 %h %p" <username>@<target-host>
-
-### If don't use docker/docker-compose.publish.yml
-### get container ip with `docker inspect --format '{{ .NetworkSettings.IPAddress }}' <container>`
-ssh -o ProxyCommand="nc -X 5 -x 127.0.0.1:1080 %h %p" pouya.azarpour@<target-host>
 ```
 
 ### With ip route
